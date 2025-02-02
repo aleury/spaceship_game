@@ -5,9 +5,12 @@ use rand::Rng;
 
 use crate::{
     asset_loader::SceneAssets,
+    collision_detection::Collider,
     movement::{Acceleration, MovingObjectBundle, Velocity},
 };
 
+const RADIUS: f32 = 2.5;
+const ROTATION_SPEED: f32 = 2.5;
 const VELOCITY_SCALAR: f32 = 5.0;
 const ACCELERATION_SCALAR: f32 = 1.0;
 const SPAWN_RANGE_X: Range<f32> = -25.0..25.0;
@@ -29,7 +32,10 @@ impl Plugin for AsteroidsPlugin {
         app.insert_resource(SpawnTimer {
             timer: Timer::from_seconds(SPAWN_TIME_SECONDS, TimerMode::Repeating),
         })
-        .add_systems(Update, spawn_asteroid);
+        .add_systems(
+            Update,
+            (spawn_asteroid, rotate_asteroids, handle_asteroid_collisions),
+        );
     }
 }
 
@@ -61,6 +67,7 @@ fn spawn_asteroid(
         MovingObjectBundle {
             velocity: Velocity::new(velocity),
             acceleration: Acceleration::new(acceleration),
+            collider: Collider::new(RADIUS),
             model: SceneBundle {
                 scene: scene_assets.asteroid.clone(),
                 transform: Transform::from_translation(translation),
@@ -68,4 +75,26 @@ fn spawn_asteroid(
             },
         },
     ));
+}
+
+fn rotate_asteroids(time: Res<Time>, mut query: Query<&mut Transform, With<Asteroid>>) {
+    for mut transform in &mut query {
+        transform.rotate_local_z(ROTATION_SPEED * time.delta_seconds());
+    }
+}
+
+fn handle_asteroid_collisions(
+    mut commands: Commands,
+    query: Query<(Entity, &Collider), With<Asteroid>>,
+) {
+    for (entity, collider) in &query {
+        for collided_entity in &collider.colliding_entities {
+            // Ignore collisions with other asteroids.
+            if query.get(*collided_entity).is_ok() {
+                continue;
+            }
+            // Despawn the asteroid if it collides with anything else.
+            commands.entity(entity).despawn_recursive();
+        }
+    }
 }
