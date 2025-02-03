@@ -10,6 +10,7 @@ mod collision_detection;
 mod debug;
 mod despawn;
 mod movement;
+mod schedule;
 mod spaceship;
 
 use bevy::prelude::*;
@@ -18,9 +19,10 @@ use asset_loader::AssetLoaderPlugin;
 use asteroids::AsteroidsPlugin;
 use camera::CameraPlugin;
 use collision_detection::CollisionDetectionPlugin;
-use debug::DebugPlugin;
+// use debug::DebugPlugin;
 use despawn::DepsawnPlugin;
 use movement::MovementPlugin;
+use schedule::SchedulePlugin;
 use spaceship::SpaceshipPlugin;
 
 const BG_COLOR: Color = Color::rgb(0.1, 0.0, 0.15);
@@ -42,6 +44,7 @@ fn main() {
         .add_plugins(MovementPlugin)
         .add_plugins(CollisionDetectionPlugin)
         .add_plugins(DepsawnPlugin)
-        .add_plugins(DebugPlugin)
+        .add_plugins(SchedulePlugin)
+        // .add_plugins(DebugPlugin)
         .run();
 }
