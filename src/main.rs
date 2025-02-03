@@ -19,7 +19,7 @@ use asset_loader::AssetLoaderPlugin;
 use asteroids::AsteroidsPlugin;
 use camera::CameraPlugin;
 use collision_detection::CollisionDetectionPlugin;
-// use debug::DebugPlugin;
+use debug::DebugPlugin;
 use despawn::DepsawnPlugin;
 use movement::MovementPlugin;
 use schedule::SchedulePlugin;
@@ -45,6 +45,6 @@ fn main() {
         .add_plugins(CollisionDetectionPlugin)
         .add_plugins(DepsawnPlugin)
         .add_plugins(SchedulePlugin)
-        // .add_plugins(DebugPlugin)
+        .add_plugins(DebugPlugin)
         .run();
 }
