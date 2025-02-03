@@ -9,6 +9,7 @@ mod camera;
 mod collision_detection;
 mod debug;
 mod despawn;
+mod health;
 mod movement;
 mod schedule;
 mod spaceship;
@@ -48,6 +49,6 @@ fn main() {
         .add_plugins(DepsawnPlugin)
         .add_plugins(SchedulePlugin)
         .add_plugins(StatePlugin)
-        .add_plugins(DebugPlugin)
+        // .add_plugins(DebugPlugin)
         .run();
 }
